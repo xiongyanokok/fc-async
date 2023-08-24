@@ -35,14 +35,14 @@ CREATE TABLE `async_log` (
 async.enabled=true
 
 ### 数据源 druid 
-spring.datasource.driver-class-name=com.mysql.jdbc.Driver
-spring.datasource.url=jdbc:mysql://127.0.0.1:3306/fc_async?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true
-spring.datasource.username=user
-spring.datasource.password=xxxx
-spring.datasource.filters=config
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver<br>
+spring.datasource.url=jdbc:mysql://127.0.0.1:3306/fc_async?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true<br>
+spring.datasource.username=user<br>
+spring.datasource.password=xxxx<br>
+spring.datasource.filters=config<br>
 spring.datasource.connectionProperties=config.decrypt=true;config.decrypt.key=yyy
 ### 静态地址
-spring.resources.add-mappings=true
+spring.resources.add-mappings=true<br>
 spring.resources.static-locations=classpath:/static/
 
 
@@ -85,8 +85,8 @@ http://localhost:8004/async/index.html
 
 
 
-### 注意 ### 
-kafka 和 job  需要自行配置实现
+# 注意 
+kafka 和 job  需要自行配置实现<br>
 
 当然也可以替换掉这两个组件
 
