@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- import Vue before Element -->
+    <script src="https://static.fuchuang.com/pub/vue/vue.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+        .el-dialog__body {
+            padding: 10px 20px;
+            color: #606266;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .el-dialog {
+            width: 65%;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <template>
+        <el-table :data="tableDatas" border style="width: 100%">
+            <el-table-column
+                    v-for="(item, index) in tableColumns" :prop="item.prop" :key="item.prop"
+                    :label="item.label" :min-width="item.minWidth" sortable show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column label="操作" style="width: 100px;" min-width="200">
+                <template slot-scope="scope">
+                    <el-button size="mini" @click="handlerDetail(scope.row)">详情</el-button>
+                    <el-button size="mini" @click="handlerExec(scope.row)">执行</el-button>
+                    <el-button size="mini" type="danger" @click="handlerDelete(scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <el-pagination background layout="total, sizes, prev, pager, next"
+                       @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                       :current-page="pagination.current" :page-size="pagination.size" :total="totalCount" :page-sizes="pageSizes">
+        </el-pagination>
+
+        <el-dialog title="详情" :visible.sync="dialogVisible" :before-close="handleDialogClose">
+            <div class="detail-wrap" :data="dialogContent">
+                <pre style="white-space:pre-wrap">{{dialogContent.req}}</pre>
+                <hr/>
+                <pre style="white-space:pre-wrap">{{dialogContent.log}}</pre>
+            </div>
+            <span slot="footer" class="dialog-footer"></span>
+        </el-dialog>
+    </template>
+</div>
+<script>
+    let loadingInstance;
+    let count = 0;
+
+    // 创建实例后设置token
+    axios.defaults.headers.common['authorization'] = getCookie("authorization");
+
+    //请求发送拦截，把数据发送给后台之前做些什么......
+    axios.interceptors.request.use((request) => {
+        startLoading(".content")
+        return request;
+    }, function (error) {
+        endLoading();
+        return Promise.reject(error);
+    });
+
+    //请求返回拦截，把数据返回到页面之前做些什么...
+    axios.interceptors.response.use((response) => {
+        endLoading();
+        return response;
+    }, function (error) {
+        endLoading();
+        return Promise.reject(error);
+    });
+
+    function startLoading(targetdq) {
+        if (count > 0) {
+            loadingInstance.close();
+        }
+        count++;
+        loadingInstance = Vue.prototype.$loading({
+            text: 'loading...',
+            target: document.querySelector(targetdq) // 设置加载动画区域
+        });
+    }
+
+    function endLoading() {
+        if (count > 0) {
+            loadingInstance.close();
+        }
+        count = 0;
+    }
+
+    function post(url, postData, success, error) {
+        axios.post(url, postData)
+            .then(function (response) {
+                if (200 == response.status) {
+                    rsp = response.data;
+                    if (1 === rsp.code) {
+                        // 成功
+                        success(rsp);
+                    } else if (-1 === rsp.code) {
+                        // 调整登录页面
+                        window.location.href = rsp.msg;
+                    } else {
+                        // 失败提示
+                        error(rsp.msg);
+                    }
+                }
+            })
+            .catch(function (error) {
+                alert(error);
+            });
+    }
+
+
+    new Vue({
+        el: "#app",
+        data: {
+            dialogVisible: false,
+            tableDatas: [],
+            tableColumns: [
+                {prop: "applicationName", label: "应用名称", minWidth: "150"},
+                {prop: "className", label: "全路径类名称", minWidth: "200"},
+                {prop: "methodName", label: "方法名称", minWidth: "150"},
+                {prop: "remark", label: "业务描述", minWidth: "200"},
+                {prop: "execCount", label: "执行次数", minWidth: "80"},
+                {prop: "createTime", label: "创建时间", minWidth: "120"},
+            ],
+            pagination: {
+                current: 1,
+                size: 10,
+            },
+            totalCount: 0,
+            pageSizes: [10, 20, 50],
+            dialogContent: {},
+        },
+        methods: {
+            handlerQuery() {
+                postData = {
+                    pageNum: this.pagination.current,
+                    pageSize: this.pagination.size,
+                };
+                let self = this;
+                post("../scm/async/page", postData, function (rsp) {
+                    page = rsp.data;
+                    self.tableDatas = page.list;
+                    self.totalCount = page.total;
+                });
+            },
+            handleSizeChange(val) {
+                this.pagination.size = val;
+                this.handlerQuery();
+            },
+            handleCurrentChange(val) {
+                this.pagination.current = val;
+                this.handlerQuery();
+            },
+            handlerDetail(row) {
+                let self = this;
+                post("../scm/async/detail/" + row.id, postData, function (rsp) {
+                    self.dialogContent = rsp.data;
+                    self.dialogVisible = true;
+                });
+            },
+            handlerExec(row) {
+                let self = this;
+                post("../scm/async/exec/" + row.id, postData, function (rsp) {
+                    self.handlerQuery();
+                }, function (rsp) {
+                    self.handlerQuery();
+                    alert(rsp);
+                });
+            },
+            handlerDelete(row) {
+                if (confirm("确定要删除吗？")) {
+                    let self = this;
+                    post("../scm/async/delete/" + row.id, postData, function (rsp) {
+                        self.handlerQuery();
+                    }, function (rsp) {
+                        self.handlerQuery();
+                    });
+                }
+            },
+
+            handleDialogClose() {
+                this.dialogVisible = false;
+            },
+        },
+        created: function () {
+            this.handlerQuery();
+        },
+    });
+
+    function getCookie(name) {
+        //获取cookie字符串
+        var strCookie = document.cookie;
+        //分割
+        var arrCookie = strCookie.split("; ");
+        for (var i = 0; i < arrCookie.length; i++) {
+            var arr = arrCookie[i].split("=");
+            if (arr[0] === name) {
+                return arr[1];
+            }
+        }
+        return "";
+    }
+</script>
+</body>
+</html>
