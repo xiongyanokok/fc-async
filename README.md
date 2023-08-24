@@ -1,3 +1,15 @@
+# 异步策略
+![image](https://github.com/xiongyanokok/fc-async/assets/11241127/1b7aebf1-d4f7-49ee-8830-bcfc48237ebf)
+
+
+# 安全级别
+![image](https://github.com/xiongyanokok/fc-async/assets/11241127/12432d25-b910-4475-94f6-177237b41b20)
+
+
+# 效果展示
+![image](https://github.com/xiongyanokok/fc-async/assets/11241127/27129d28-417d-4d0c-b0b5-6138b26e4c11)
+
+
 # 数据库脚本
 ``` sql
 CREATE TABLE `async_req` (
