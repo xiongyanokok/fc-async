@@ -1,8 +1,11 @@
 package com.fc.async.handler.impl;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.fc.async.config.SpringBeanConfig;
+import com.fc.async.domain.entity.AsyncReq;
+import com.fc.async.enums.AsyncTypeEnum;
+import com.fc.async.enums.ExecStatusEnum;
+import com.fc.async.handler.context.AsyncContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -10,13 +13,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.fc.async.config.SpringBeanConfig;
-import com.fc.async.domain.entity.AsyncReq;
-import com.fc.async.enums.AsyncTypeEnum;
-import com.fc.async.enums.ExecStatusEnum;
-import com.fc.async.handler.context.AsyncContext;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 先同步处理失败再保存数据库
@@ -46,7 +44,7 @@ public class SyncSaveHandlerService extends AbstractHandlerService {
         }
         try {
             // 同步处理
-            context.getJoinPoint().proceed();
+            context.getJoinPoint().proceed(context.getJoinPoint().getArgs());
             if (null != status) {
                 transactionManager.commit(status);
             }

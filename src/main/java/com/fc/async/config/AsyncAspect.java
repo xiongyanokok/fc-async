@@ -35,7 +35,7 @@ public class AsyncAspect {
         if (AsyncConstant.PUBLISH_EVENT.get()) {
             try {
                 // 直接执行
-                return joinPoint.proceed();
+                return joinPoint.proceed(joinPoint.getArgs());
             } finally {
                 AsyncConstant.PUBLISH_EVENT.remove();
             }
