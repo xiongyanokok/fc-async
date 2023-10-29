@@ -53,7 +53,7 @@ public abstract class AbstractHandlerService implements HandlerService {
         if (!success) {
             // 最终兜底方案直接执行
             try {
-                context.getJoinPoint().proceed();
+                context.getJoinPoint().proceed(context.getJoinPoint().getArgs());
             } catch (Throwable e) {
                 log.error("兜底方案依然执行失败：{}", asyncExecDto, e);
                 log.error("人工处理，queue：{}，message：{}", applicationName + AsyncConstant.QUEUE_SUFFIX, JacksonUtil.toJsonString(asyncExecDto));
