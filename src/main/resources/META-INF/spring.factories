@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.fc.async.config.AsyncConfig
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.xy.async.config.AsyncConfig

@@ -5,7 +5,7 @@
     <!-- import CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <!-- import Vue before Element -->
-    <script src="https://static.fuchuang.com/pub/vue/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- import JavaScript -->
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
@@ -149,7 +149,7 @@
                     pageSize: this.pagination.size,
                 };
                 let self = this;
-                post("../scm/async/page", postData, function (rsp) {
+                post("../xy/async/page", postData, function (rsp) {
                     page = rsp.data;
                     self.tableDatas = page.list;
                     self.totalCount = page.total;
@@ -165,14 +165,14 @@
             },
             handlerDetail(row) {
                 let self = this;
-                post("../scm/async/detail/" + row.id, postData, function (rsp) {
+                post("../xy/async/detail/" + row.id, postData, function (rsp) {
                     self.dialogContent = rsp.data;
                     self.dialogVisible = true;
                 });
             },
             handlerExec(row) {
                 let self = this;
-                post("../scm/async/exec/" + row.id, postData, function (rsp) {
+                post("../xy/async/exec/" + row.id, postData, function (rsp) {
                     self.handlerQuery();
                 }, function (rsp) {
                     self.handlerQuery();
@@ -182,7 +182,7 @@
             handlerDelete(row) {
                 if (confirm("确定要删除吗？")) {
                     let self = this;
-                    post("../scm/async/delete/" + row.id, postData, function (rsp) {
+                    post("../xy/async/delete/" + row.id, postData, function (rsp) {
                         self.handlerQuery();
                     }, function (rsp) {
                         self.handlerQuery();
