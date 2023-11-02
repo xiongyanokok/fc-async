@@ -83,6 +83,11 @@ async.retry.limit=100
 #### 补偿最大查询数量
 async.comp.limit=100
 
+#### 登录开关：默认关闭
+async.login.enabled=false
+
+#### 登录url
+async.login.url=http://xxxx.com
 
 
 ## 用法
