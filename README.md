@@ -47,12 +47,12 @@ CREATE TABLE `async_log` (
 async.enabled=true
 
 #### 数据源 druid 
-spring.datasource.driver-class-name=com.mysql.jdbc.Driver<br>
-spring.datasource.url=jdbc:mysql://127.0.0.1:3306/fc_async?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true<br>
-spring.datasource.username=user<br>
-spring.datasource.password=xxxx<br>
-spring.datasource.filters=config<br>
-spring.datasource.connectionProperties=config.decrypt=true;config.decrypt.key=yyy
+async.datasource.driver-class-name=com.mysql.jdbc.Driver<br>
+async.datasource.url=jdbc:mysql://127.0.0.1:3306/fc_async?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true<br>
+async.datasource.username=user<br>
+async.datasource.password=xxxx<br>
+async.datasource.filters=config<br>
+async.datasource.connectionProperties=config.decrypt=true;config.decrypt.key=yyy
 #### 静态地址
 spring.resources.add-mappings=true<br>
 spring.resources.static-locations=classpath:/static/
